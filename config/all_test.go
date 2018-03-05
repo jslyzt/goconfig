@@ -1,17 +1,3 @@
-// Copyright 2009  The "goconfig" Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package config
 
 import (
@@ -112,7 +98,7 @@ func TestInMemory(t *testing.T) {
 	}
 
 	// default section always exists
-	if c.AddSection(_DEFAULT_SECTION) {
+	if c.AddSection(DefaultSection) {
 		t.Errorf("AddSection failure: true on default section insert")
 	}
 
@@ -181,10 +167,10 @@ func TestInMemory(t *testing.T) {
 
 	// === Test cycle
 
-	c.AddOption(_DEFAULT_SECTION, "opt1", "%(opt2)s")
-	c.AddOption(_DEFAULT_SECTION, "opt2", "%(opt1)s")
+	c.AddOption(DefaultSection, "opt1", "%(opt2)s")
+	c.AddOption(DefaultSection, "opt2", "%(opt1)s")
 
-	_, err = c.String(_DEFAULT_SECTION, "opt1")
+	_, err = c.String(DefaultSection, "opt1")
 	if err == nil {
 		t.Errorf("String failure: no error for cycle")
 	} else if strings.Index(err.Error(), "cycle") < 0 {
@@ -206,7 +192,7 @@ func TestReadFile(t *testing.T) {
 	buf.WriteString("  # Let me put another comment\n")
 	buf.WriteString("    option3= line1\nline2 \n\tline3 # Comment\n")
 	buf.WriteString("; Another comment\n")
-	buf.WriteString("[" + _DEFAULT_SECTION + "]\n")
+	buf.WriteString("[" + DefaultSection + "]\n")
 	buf.WriteString("variable1=small\n")
 	buf.WriteString("variable2=a_part_of_a_%(variable1)s_test\n")
 	buf.WriteString("[secTION-2]\n")
@@ -249,8 +235,8 @@ func TestWriteReadFile(t *testing.T) {
 	cw.AddOption("First-Section", "option2", "2")
 
 	cw.AddOption("", "host", "www.example.com")
-	cw.AddOption(_DEFAULT_SECTION, "protocol", "https://")
-	cw.AddOption(_DEFAULT_SECTION, "base-url", "%(protocol)s%(host)s")
+	cw.AddOption(DefaultSection, "protocol", "https://")
+	cw.AddOption(DefaultSection, "base-url", "%(protocol)s%(host)s")
 
 	cw.AddOption("Another-Section", "useHTTPS", "y")
 	cw.AddOption("Another-Section", "url", "%(base-url)s/some/path")
